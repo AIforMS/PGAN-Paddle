@@ -274,8 +274,7 @@ class GANTrainer():
             self.refVectorVisualization, self.refVectorLabels = \
                 self.model.buildNoiseData(self.nDataVisualization)
         else:
-            self.refVectorVisualization = paddle.load(
-                open(self.refVectorPath, 'rb'))
+            self.refVectorVisualization = paddle.load(self.refVectorPath)
 
     def getDefaultConfig(self):
         pass

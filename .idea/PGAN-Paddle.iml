@@ -3,6 +3,7 @@
   <component name="NewModuleRootManager">
     <content url="file://$MODULE_DIR$">
       <excludeFolder url="file://$MODULE_DIR$/img_dataset" />
+      <excludeFolder url="file://$MODULE_DIR$/output_networks" />
       <excludeFolder url="file://$MODULE_DIR$/test_Nets" />
     </content>
     <orderEntry type="jdk" jdkName="Python 3.7 (pytorch15-conda)" jdkType="Python SDK" />
