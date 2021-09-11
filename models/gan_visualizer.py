@@ -5,7 +5,7 @@ import math
 import pickle as pkl
 
 import paddle
-import torch.nn.functional as F
+import paddle.nn.functional as F
 import paddle.vision.transforms as Transforms
 import numpy as np
 
@@ -317,8 +317,7 @@ class GANVisualizer():
                     else:
                         imgSource, _ = dataset[names[i]]
                         imgSource = imgSource.reshape((1, imgSource.shape[0], imgSource.shape[1], imgSource.shape[2]))
-                        imgSource = F.upsample(
-                            imgSource, size=(size, size), mode='bilinear')
+                        imgSource = F.upsample(imgSource, size=(size, size), mode='bilinear')
 
                     vectorOut.append(imgSource)
 
