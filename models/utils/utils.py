@@ -265,11 +265,11 @@ def loadPartOfStateDict(module, state_dict, forbiddenLayers=None):
     for name, param in module.named_parameters():
         if name.split(".")[0] in forbiddenLayers:
             continue
-        if isinstance(param, paddle.static.Variable):
+        if isinstance(param, paddle.fluid.core_avx.VarBase):
             # backwards compatibility for serialized parameters
             param = param.detach().clone()
 
-        own_state[name].copy_(param)
+        own_state[name].set_value(param)
 
 
 def loadStateDictCompatible(module, state_dict):
@@ -279,12 +279,12 @@ def loadStateDictCompatible(module, state_dict):
     """
     own_state = module.state_dict()
     for name, param in module.named_parameters():
-        if isinstance(param, paddle.static.Variable):
+        if isinstance(param, paddle.fluid.core_avx.VarBase):
             # backwards compatibility for serialized parameters
             param = param.detach().clone()
 
         if name in own_state:
-            own_state[name].copy_(param)
+            own_state[name].set_value(param)
             continue
 
         # Else see if the input name is a prefix
