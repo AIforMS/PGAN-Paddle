@@ -262,7 +262,7 @@ def loadPartOfStateDict(module, state_dict, forbiddenLayers=None):
     own_state = module.state_dict()
     if forbiddenLayers is None:
         forbiddenLayers = []
-    for name, param in module.named_parameters():
+    for name, param in state_dict.items():
         if name.split(".")[0] in forbiddenLayers:
             continue
         if isinstance(param, paddle.fluid.core_avx.VarBase):
@@ -278,7 +278,7 @@ def loadStateDictCompatible(module, state_dict):
     to one of the forbidden layers
     """
     own_state = module.state_dict()
-    for name, param in module.named_parameters():
+    for name, param in state_dict.items():
         if isinstance(param, paddle.fluid.core_avx.VarBase):
             # backwards compatibility for serialized parameters
             param = param.detach().clone()
@@ -295,7 +295,7 @@ def loadStateDictCompatible(module, state_dict):
             if indexEnd > 0:
                 newKey = name[:indexEnd] + "module." + suffix
                 if newKey in own_state:
-                    own_state[newKey].copy_(param)
+                    own_state[newKey].set_value(param)
                     found = True
                     break
 
