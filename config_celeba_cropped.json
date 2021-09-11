@@ -1,0 +1,13 @@
+{
+  "pathDB": "img_dataset/celeba_cropped",
+  "config": {
+    "maxIterAtScale": [
+      48000,
+      96000,
+      96000,
+      96000,
+      96000,
+      96000
+    ]
+  }
+}
