@@ -201,7 +201,7 @@ class ProgressiveGANTrainer(GANTrainer):
             - False if the training was interrupted due to a divergent behavior
         """
 
-        n_scales = len(self.modelConfig.depthScales)
+        n_scales = len(self.modelConfig.depthScales)  # n_scales = 9
 
         if self.checkPointDir is not None:
             pathBaseConfig = os.path.join(self.checkPointDir, self.modelLabel
@@ -209,6 +209,7 @@ class ProgressiveGANTrainer(GANTrainer):
             self.saveBaseConfig(pathBaseConfig)
 
         for scale in range(self.startScale, n_scales):
+            # self.startScale = 0, from Parent class GANTrainer
 
             self.updateDatasetForScale(scale)
 
