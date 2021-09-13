@@ -10,6 +10,9 @@ from .np_visualizer import make_numpy_grid
 
 vis = visdom.Visdom()
 
+"""
+启动程序之前，先在终端挂起 visdom 服务：python -m visdom.server
+"""
 
 def resizeTensor(data, out_size_image):
 
@@ -19,15 +22,16 @@ def resizeTensor(data, out_size_image):
     outdata = paddle.empty(out_data_size)
     data = paddle.clip(data, min=-1, max=1)
 
-    interpolationMode = 0
+    interpolationMode = "nearest"  # 0
     if out_size_image[0] < data.shape[0] and out_size_image[1] < data.shape[1]:
-        interpolationMode = 2
+        interpolationMode = "bilinear"  # 2
 
     transform = Transforms.Compose([Transforms.Normalize((-1., -1., -1.), (2, 2, 2)),
-                                    Transforms.ToPILImage(),
+                                    # Transforms.ToPILImage(),
                                     Transforms.Resize(
                                         out_size_image, interpolation=interpolationMode),
-                                    Transforms.ToTensor()])
+                                    Transforms.ToTensor()
+                                    ])
 
     for img in range(out_data_size[0]):
         outdata[img] = transform(data[img])
@@ -80,6 +84,30 @@ def delete_env(name):
     vis.delete_env(name)
 
 
+def publishLinePlot(data, xData, name="", window_token=None, env="main"):
+    # TODO
+    # if window_token is None:
+    #     window_token = {key: None for key in data}
+    #
+    # for key, plot in data.items():
+    #
+    #     if key in ("scale", "iter"):
+    #         continue
+    #
+    #     nItems = len(plot)
+    #     inputY = np.array([plot[x] for x in range(nItems) if plot[x] is not None])
+    #     inputX = np.array([data["iter"][x] for x in range(nItems) if plot[x] is not None])
+    #
+    #     opts = {'title': key + (' scale %d loss over time' % data["scale"]),
+    #             'legend': [key], 'xlabel': 'iteration', 'ylabel': 'loss'}
+    #
+    #     window_token[key] = vis.line(X=inputX, Y=inputY, opts=opts,
+    #                                 win=window_token[key], env=env, name=name)
+    #
+    # return window_token
+    return None
+
+
 def publishScatterPlot(data, name="", window_token=None):
     r"""
     Draws 2D or 3d scatter plots
@@ -111,6 +139,6 @@ def publishScatterPlot(data, name="", window_token=None):
     colors = paddle.concat(colors, axis=0).numpy()
     opts = {'markercolor': colors,
             'caption': name}
-    activeData = paddle.concat(data, axis=0)
+    activeData = paddle.concat(data, axis=0).numpy()
 
     return vis.scatter(activeData, opts=opts, win=window_token, name=name)
