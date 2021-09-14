@@ -6,7 +6,7 @@ import sys
 if __name__ == "__main__":
 
     """
-    python eval.py visualization -n $modelName -m PGAN --save_dataset img_dataset/output_dataset --size_dataset 256
+    python eval.py visualization -n $modelName -m PGAN --save_dataset img_dataset/output_dataset --size_dataset 3
     """
 
     parser = argparse.ArgumentParser(description='Testing script', add_help=False)

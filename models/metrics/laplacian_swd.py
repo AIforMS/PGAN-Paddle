@@ -191,7 +191,7 @@ class LaplacianSWDMetric:
         assert(ref.shape == target.shape)
 
         if not self.convolution:
-            self.initConvolution(ref.device)
+            self.initConvolution(paddle.get_device())  # ref.device
 
         for item, dest in modes:
             pyramid = self.generateLaplacianPyramid(item, self.depthPyramid)
