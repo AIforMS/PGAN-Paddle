@@ -55,8 +55,8 @@ def ssim(X, Y, window, data_range: float, use_padding: bool = False):
     :return:
     """
 
-    K1 = 0.01
-    K2 = 0.03
+    K1 = 0.1
+    K2 = 0.3
     compensation = 1.0
 
     C1 = (K1 * data_range) ** 2

@@ -15,6 +15,9 @@ from ..utils.utils import getVal, loadmodule, getLastCheckPoint, \
     parse_state_name, getNameAndPackage, saveScore
 from ..utils.image_transform import standardTransform
 
+# set device
+paddle.set_device('gpu' if paddle.is_compiled_with_cuda() else 'cpu')
+
 
 def test(parser, visualisation=None):
     parser.add_argument('--selfNoise', action='store_true',
