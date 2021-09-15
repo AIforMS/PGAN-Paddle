@@ -124,7 +124,7 @@
 
 ### 2. 预测
 
-**训练的最终模型可到百度网盘自取：[celeba_cropped_s5_i96000](https://pan.baidu.com/s/1-wvYpLYiEUGpBi3xT31roA )**，提取码：6nv9
+**训练好的最终模型可到百度网盘自取：[celeba_cropped_s5_i96000](https://pan.baidu.com/s/1-wvYpLYiEUGpBi3xT31roA )**，提取码：6nv9。将其中两个模型文件放到项目的 `output_networks/celeba_cropped` 中。
 
 - **图像生成**
 
