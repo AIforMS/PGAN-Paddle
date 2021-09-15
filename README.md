@@ -110,7 +110,7 @@
 	```
 	python train.py PGAN -c config_celeba_cropped.json --restart -n celeba_cropped --np_vis
 	```
-	然后等几天（我用 T4，等了 6 天。所以它到底加速了什么呢 :stuck_out_tongue_closed_eyes: ）。。。各个阶段训练好的模型会被转储到 `output_networks/celeba_cropped` 中。训练完成后应该得到 128 x 128 分辨率的生成图像。
+	然后等几天（我用 T4 和百度 AI studio 的 V100，前后跑了 6 天。所以它到底加速了什么呢 :stuck_out_tongue_closed_eyes: ）。。。各个阶段训练好的模型会被转储到 `output_networks/celeba_cropped` 中。训练完成后应该得到 128 x 128 分辨率的生成图像。
 	
 	如果训练中断，重启训练时可以把 `--restart` 去掉，训练会从 `output_networks/celeba_cropped` 中保存的最新模型开始。如果想使用 GDPP loss，可以加入 `--GDPP True`。
     
@@ -300,7 +300,7 @@ Changing alpha to 0.000
 但是我复现时没有注意到此处，复现的 paddle 版本直接使用源码默认的 batch_size=16 进行训练，发现显存还剩余很多，于是改成 batch_size=32，发现开头的 loss 变得很大，但是也很快收敛到稳定的 20 以内。训练到 scale=5 时，PGAN 增加的高分辨率层会导致 32 GB 的显存爆满，需要将 batch_size 下调至 16 或更小。
 
 **SWD metric**
-预测过程会在整个 celeba_cropped 数据集中随机采样 16000 张图像来预测并计算一个模型的不同 scale 下每对图像（输入图像和对应的生成图像）的 SWD 指标，用同样的模型每次计算得到的指标结果有所不同。
+预测过程会在整个 celeba_cropped 数据集中随机采样 16000 张图像来预测并计算一个模型的不同 scale 下每对图像（输入图像和对应的生成图像）的 SWD 指标，用同样的模型每次计算得到的指标结果有所不同。如果把采样数改成几千或更少，SWD 的值会很大，但是采样数在 16000 左右，SWD 就基本不变了。既然都是在训练集中采样的，模型应该是拟合了所有 20 多万张头像的信息，为何采样数量少的情况下 SWD 指标会变大，我暂时不明白。
 
 **MS-SSIM metric**
 由于源代码没有提供 MS-SSIM 的实现，我参考 GitHub 的开源 pytorch 版本 [https://github.com/VainF/pytorch-msssim/blob/master/pytorch_msssim/ssim.py](https://github.com/VainF/pytorch-msssim/blob/master/pytorch_msssim/ssim.py) 来计算 MS-SSIM 指标，得到的结果跟论文中在 celeba 数据集上的测试结果差不多。论文中说 SWD 指标能更好反映图像质量以及结构的差异和变化，而 MS-SSIM 只测量输出之间的变化，不会反映生成图像和训练集的差异，所以在生成图像发生了明显改善后，MS-SSIM 指标也几乎没有变化，SWD 指标的结果变好了一点。
@@ -319,4 +319,5 @@ Changing alpha to 0.000
 | 框架版本 | paddlepaddle 0.0.0 （develop 版本） |
 | 应用场景 | GAN 图像生成 |
 | 支持硬件 | GPU、CPU（RAM >= 16 GB） |
+| CELEBA数据集下载 | [CELEBA](http://mmlab.ie.cuhk.edu.hk/projects/CelebA.html) |
 | AI Studio 地址 | [https://aistudio.baidu.com/aistudio/projectdetail/2351963](https://aistudio.baidu.com/aistudio/projectdetail/2351963) |
