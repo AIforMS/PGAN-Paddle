@@ -124,7 +124,8 @@
 
 ### 2. 预测
 
-**训练好的最终模型可到百度网盘自取：[celeba_cropped_s5_i96000](https://pan.baidu.com/s/1-wvYpLYiEUGpBi3xT31roA )**，提取码：6nv9。将其中两个模型文件放到项目的 `output_networks/celeba_cropped` 中。
+**训练好的最终模型可到百度网盘自取：[celeba_cropped_s5_i96000](https://pan.baidu.com/s/1-wvYpLYiEUGpBi3xT31roA )**，提取码：6nv9。将其中的文件放到项目的 `output_networks/celeba_cropped` 中，在 `.json` 文件中指定 `refVectors.pdparams` 的路径，`losses.pkl` 可以没有。
+> 如需要运行 i80000.pdparams 模型，可以把 `.json` 文件的文件名改成对应的 i80000，因为需要通过这个文件找到 `refVectors.pdparams` 的路径。
 
 - **图像生成**
 
@@ -150,7 +151,7 @@
 	
 	运行：
 	```
-	python eval.py laplacian_SWD -c config_celeba_cropped.json -n celeba_cropped -m PGAN --np_vis
+	python eval.py laplacian_SWD -c config_celeba_cropped.json -n celeba_cropped -m PGAN -s 5 -i 64000 --np_vis
 	```
 	它会在 `config_celeba_cropped.json` 里指定的数据路径中随机遍历 16000 张源图像及其生成图像来计算 SWD 指标，Merging the results 的过程会占用不少 CPU 内存（18 GB 左右）和时间。运行后会输出：
 	```
