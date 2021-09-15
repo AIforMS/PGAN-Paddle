@@ -184,10 +184,10 @@
 │   ├── trainer               # 训练策略封装
 │   ├── utils                 # 工具包
 │   ├── UTs                   # 未使用
-│	├── base_GAN.py           # GAN父类
-│	├── gan_visualizer.py     # GAN 训练中间图像保存
+│   ├── base_GAN.py           # GAN父类
+│   ├── gan_visualizer.py     # GAN 训练中间图像保存
 │   ├── progressive_gan.py    # PGAN
-│	├── README.md             # models' readme
+│   ├── README.md             # models' readme
 ├── output_networks           # 保存训练和预测结果
 ├── visualization             # 可视化、图像保存
 ├── CODE_OF_CONDUCT.md              
