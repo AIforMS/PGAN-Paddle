@@ -61,11 +61,11 @@ def finiteCheck(parameters):
 
     for p in parameters:
         np_grad = p.grad.numpy()
-        infGrads = isinf(p.grad.detach())
+        infGrads = isinf(p.grad.detach()).numpy()
         np_grad[infGrads] = 0.
         p.grad.set_value(paddle.to_tensor(np_grad, stop_gradient=False))
 
-        nanGrads = isnan(p.grad.detach())
+        nanGrads = isnan(p.grad.detach()).numpy()
         np_grad = p.grad.numpy()
         np_grad[nanGrads] = 0.
         p.grad.set_value(paddle.to_tensor(np_grad, stop_gradient=False))
