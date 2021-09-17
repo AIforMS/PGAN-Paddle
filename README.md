@@ -1,5 +1,4 @@
 ﻿# 论文复现：Progressive Growing of GANs for Improved Quality, Stability, and Variation
----
 
 ## 一、简介
 本文提出了一种新的训练 GAN 的方法——在训练过程中逐步增加生成器和鉴别器的卷积层：从低分辨率开始，随着训练的进行，添加更高分辨率的卷积层，对更加精细的细节进行建模，生成更高分辨率和质量的图像。
@@ -95,8 +94,8 @@
 	    "miniBatchScheduler": {"0": 64, "1": 64, "2": 64, "3": 64, "4": 32, "5": 22},
 	    "configScheduler": {
 	      "0": {"baseLearningRate": 0.001},
-              "1": {"baseLearningRate": 0.001},
-              "2": {"baseLearningRate": 0.001},
+          "1": {"baseLearningRate": 0.001},
+          "2": {"baseLearningRate": 0.001},
 	      "3": {"baseLearningRate": 0.003},
 	      "4": {"baseLearningRate": 0.003},
 	      "5": {"baseLearningRate": 0.003}
