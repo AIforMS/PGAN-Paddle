@@ -39,7 +39,7 @@
         256,
         128
     ],
-    "miniBatchSize": 16,
+    "miniBatchSize": 64,
     "dimLatentVector": 512,
     "initBiasToZero": true,
     "perChannelNormalization": true,
