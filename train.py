@@ -122,8 +122,12 @@ if __name__ == "__main__":
 
     partitionValue = getVal(kwargs, "partition_value",
                             trainingConfig.get("partitionValue", None))
+    miniBatchScheduler = trainingConfig["config"].get("miniBatchScheduler", None)
+    configScheduler = trainingConfig["config"].get("configScheduler", None)
 
     GANTrainer = trainerModule(pathDB,
+                               miniBatchScheduler=miniBatchScheduler,
+                               configScheduler=configScheduler,
                                useGPU=True,
                                visualisation=vis_module,
                                lossIterEvaluation=kwargs["evalIter"],

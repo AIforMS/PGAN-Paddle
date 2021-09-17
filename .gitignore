@@ -1,4 +1,9 @@
-output_networks/*
+output_networks/ckpt_snap/*
+output_networks/default/*
+output_networks/*.pdparams
+output_networks/celeba_cropped/*.pdparams
+output_networks/celeba_cropped/*.pt
+.idea
 *.pyc
 setup.py
 img_dataset/*

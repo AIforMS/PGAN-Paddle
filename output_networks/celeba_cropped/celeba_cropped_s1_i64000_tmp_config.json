@@ -1,0 +1,7 @@
+{
+    "scale": 1,
+    "iter": 64000,
+    "lossLog": "/public/home/jd_shb/fromgithub/pytorch_GAN_zoo/output_networks/celeba_cropped/celeba_cropped_losses.pkl",
+    "refVectors": "/public/home/jd_shb/fromgithub/pytorch_GAN_zoo/output_networks/celeba_cropped/celeba_cropped_refVectors.pt",
+    "runningLoss": {}
+}

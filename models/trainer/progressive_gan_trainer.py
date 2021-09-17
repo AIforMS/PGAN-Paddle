@@ -49,11 +49,13 @@ class ProgressiveGANTrainer(GANTrainer):
 
         self.configScheduler = {}
         if configScheduler is not None:
+            print(f"Got configScheduler: {configScheduler}")
             self.configScheduler = {
                 int(key): value for key, value in configScheduler.items()}
 
         self.miniBatchScheduler = {}
         if miniBatchScheduler is not None:
+            print(f"Got miniBatchScheduler: {miniBatchScheduler}")
             self.miniBatchScheduler = {
                 int(x): value for x, value in miniBatchScheduler.items()}
 

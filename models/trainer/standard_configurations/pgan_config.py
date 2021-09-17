@@ -45,7 +45,7 @@ _C.alphaSizeJumps = [0, 32, 32, 32, 32, 32, 32, 32, 32, 32]
 _C.depthScales = [512, 512, 512, 512, 256, 128, 64, 32, 16]
 
 # Mini batch size
-_C.miniBatchSize = 16
+_C.miniBatchSize = 64
 
 # Dimension of the latent vector
 _C.dimLatentVector = 512

@@ -86,24 +86,30 @@
 	  }
 	}
 	```
-	可以在 config 中修改训练配置，比如调整 batch_size，它会覆盖 `standard configuration` 中的默认配置：
+	可以在 config 中修改训练配置，比如调整 batch_size，它会覆盖 `standard configuration` 中的默认配置，以下是我的训练配置：
 	```json
 	{
-	  "pathDB": "img_dataset/celeba_cropped",
+	  "pathDB": "work/img_dataset/celeba_cropped",
 	  "config": {
-	    "miniBatchSize": 32,
+	    "miniBatchScheduler": {"1": 64, "2": 64, "3": 64, "4": 32, "5": 22},
+	    "configScheduler": {
+	      "3": {"baseLearningRate": 0.003},
+	      "4": {"baseLearningRate": 0.003},
+	      "5": {"baseLearningRate": 0.003}
+	    },
 	    "maxIterAtScale": [
 	      48000,
 	      96000,
 	      96000,
 	      96000,
 	      96000,
-	      96000
+	      160000
 	    ]
 	  }
 	}
 	```
-
+    > `miniBatchScheduler` 中可以针对不同的 scale 设置不同的 batch_size，因为随着 scale 的增加，需要减小 batch_size 来防止爆显存。`configScheduler` 中可以针对不同的 scale 设置不同的 learning_rate。在代码 `PGAN-Paddle/models/progressive_gan.py` 中我还加入了自适应学习率衰减策略（lr.ReduceOnPlateau）。
+    
 - **运行训练**
 
 	接着运行以下命令从零开始训练 PGAN：

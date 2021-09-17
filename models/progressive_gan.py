@@ -99,8 +99,12 @@ class ProgressiveGAN(BaseGAN):
         #     if param.trainable:
         #         param_trainable += list(param)
         # return optim.Adam(parameters=param_trainable, beta1=0., beta2=0.99, learning_rate=self.config.learningRate)
+
+        # 在 400 个 step 后 loss 不下降，则学习率降为当前的 0.5倍，最小降到 0.0003
+        lr_scheduler = optim.lr.ReduceOnPlateau(learning_rate=self.config.learningRate, mode='min',
+                                                factor=0.5, patience=400, min_lr=0.0003, verbose=True)
         return optim.Adam(parameters=filter(lambda p: p.trainable, self.netD.parameters()),
-                          beta1=0., beta2=0.99, learning_rate=self.config.learningRate)
+                          beta1=0., beta2=0.99, learning_rate=lr_scheduler)
 
     def getOptimizerG(self):
         # param_trainable = []
@@ -108,8 +112,12 @@ class ProgressiveGAN(BaseGAN):
         #     if param.trainable:
         #         param_trainable += list(param)
         # return optim.Adam(parameters=param_trainable, beta1=0., beta2=0.99, learning_rate=self.config.learningRate)
+
+        # 在 400 个 step 后 loss 不下降，则学习率降为当前的 0.5倍，最小降到 0.0003
+        lr_scheduler = optim.lr.ReduceOnPlateau(learning_rate=self.config.learningRate, mode='min',
+                                                factor=0.5, patience=400, min_lr=0.0003, verbose=True)
         return optim.Adam(parameters=filter(lambda p: p.trainable, self.netG.parameters()),
-                          beta1=0., beta2=0.99, learning_rate=self.config.learningRate)
+                          beta1=0., beta2=0.99, learning_rate=lr_scheduler)
 
     def addScale(self, depthNewScale):
         r"""
