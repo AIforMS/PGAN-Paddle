@@ -4,7 +4,6 @@ output_networks/*.pdparams
 output_networks/*.py
 output_networks/celeba_cropped/*.pdparams
 output_networks/celeba_cropped/*.pt
-output_networks/celeba_cropped/*tmp_config.josn
 .idea
 *.pyc
 setup.py

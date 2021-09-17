@@ -1,0 +1,7 @@
+{
+    "scale": 5,
+    "iter": 96000,
+    "lossLog": "output_networks/celeba_cropped/celeba_cropped_losses.pkl",
+    "refVectors": "output_networks/celeba_cropped/celeba_cropped_refVectors.pdparams",
+    "runningLoss": {}
+}
