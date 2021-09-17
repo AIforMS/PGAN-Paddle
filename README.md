@@ -32,6 +32,7 @@
 | lambdaGP | 10.0 |  Gradient penalty coefficient (WGANGP) |
 |leakyness|0.2| Leakyness of the leakyRelU activation function |
 | epsilonD| 0.001 | Weight penalty on $D(x)^2$ |
+| miniBatchStdDev | True | Mini batch regularization |
 | baseLearningRate | 0.001 | Base learning rate| 
 | GDPP | False | 是否使用 GDPP loss 加入训练？|
 
@@ -89,7 +90,7 @@
 	可以在 config 中修改训练配置，比如调整 batch_size，它会覆盖 `standard configuration` 中的默认配置，以下是我的训练配置：
 	```json
 	{
-	  "pathDB": "work/img_dataset/celeba_cropped",
+	  "pathDB": "img_dataset/celeba_cropped",
 	  "config": {
 	    "miniBatchScheduler": {"0": 64, "1": 64, "2": 64, "3": 64, "4": 32, "5": 22},
 	    "configScheduler": {
@@ -304,21 +305,25 @@ Changing alpha to 0.000
 
 ## 七、实验数据比较及复现心得
 ![5](https://img-blog.csdnimg.cn/670632d67ade4085985397c04bb1717f.png)
-**miniBatchSize**
-原文的实验中，PGAN 的 batch_size 配置是 64，不是源码中默认设置的 16，batch_size = 16 的配置在论文中是在添加高分辨率层之后才下调的（也起到降低显存的效果），如果从头到尾都使用 batch_size=16 会导致图像生成的效果不好。
 
-但是我复现时没有注意到此处，复现的 paddle 版本直接使用源码默认的 batch_size=16 进行训练，发现显存还剩余很多，于是改成 batch_size=32，发现开头的 loss 变得很大，但是也很快收敛到稳定的 20 以内。训练到 scale=5 时，PGAN 增加的高分辨率层会导致 32 GB 的显存爆满，需要将 batch_size 下调至 16 或更小。
+**miniBatchSize**
+
+原文的实验中，PGAN 的 batch_size 配置是 64，不是源码中默认设置的 16，batch_size = 16 的配置在论文中是在添加高分辨率层之后才下调的（也起到降低显存的效果），如果从头到尾都使用 batch_size=16 会导致图像生成的效果不好。但是为了防止显存溢出，我使用配置文件设置动态适应每个 scale 的 miniBatchSize。
 
 **SWD metric**
+
 预测过程会在整个 celeba_cropped 数据集中随机采样 16000 张图像来预测并计算一个模型的不同 scale 下每对图像（输入图像和对应的生成图像）的 SWD 指标，用同样的模型每次计算得到的指标结果有所不同。如果把采样数改成几千或更少，SWD 的值会很大，但是采样数在 16000 左右，SWD 就基本不变了。既然都是在训练集中采样的，模型应该是拟合了所有 20 多万张头像的信息，为何采样数量少的情况下 SWD 指标会变大，我暂时不明白。
 
 **MS-SSIM metric**
+
 由于源代码没有提供 MS-SSIM 的实现，我参考 GitHub 的开源 pytorch 版本 [https://github.com/VainF/pytorch-msssim/blob/master/pytorch_msssim/ssim.py](https://github.com/VainF/pytorch-msssim/blob/master/pytorch_msssim/ssim.py) 来计算 MS-SSIM 指标，得到的结果跟论文中在 celeba 数据集上的测试结果差不多。论文中说 SWD 指标能更好反映图像质量以及结构的差异和变化，而 MS-SSIM 只测量输出之间的变化，不会反映生成图像和训练集的差异，所以在生成图像发生了明显改善后，MS-SSIM 指标也几乎没有变化，SWD 指标的结果变好了一点。
 
 **生成效果**
+
 论文中说明在规定的迭代次数内网络并没有完全收敛，而是达到指定迭代次数后就停止训练，所以生成的图像还不够完美，如果想要生成更完美的图像，那得再等上好几天？
 
 **API 转换**
+
 将 pytorch 版本代码转为 paddle 有些 API 在 paddle 中是没有的，但是 numpy 里是肯定都有的 :smile:，找不到的 API 用 numpy 来搭个桥，这是很不错的复现办法。
 
 ## 八、模型信息
