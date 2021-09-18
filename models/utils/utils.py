@@ -267,7 +267,7 @@ def loadPartOfStateDict(module, state_dict, forbiddenLayers=None):
             continue
         if isinstance(param, paddle.fluid.core_avx.VarBase):
             # backwards compatibility for serialized parameters
-            param = param.detach().clone()
+            param = param.detach()
 
         own_state[name].set_value(param)
 
@@ -281,7 +281,7 @@ def loadStateDictCompatible(module, state_dict):
     for name, param in state_dict.items():
         if isinstance(param, paddle.fluid.core_avx.VarBase):
             # backwards compatibility for serialized parameters
-            param = param.detach().clone()
+            param = param.detach()
 
         if name in own_state:
             own_state[name].set_value(param)
