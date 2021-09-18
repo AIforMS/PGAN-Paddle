@@ -343,11 +343,11 @@ The prediction process will randomly sample 16000 images in the entire celeba_cr
 
 Since the source code does not provide the implementation of MS-SSIM, I refer to the open source pytorch version of GitHub [https://github.com/VainF/pytorch-msssim/blob/master/pytorch_msssim/ssim.py](https://github. com/VainF/pytorch-msssim/blob/master/pytorch_msssim/ssim.py) to calculate the MS-SSIM index, the result obtained is similar to the test result on the celeba data set in the paper. The paper said that the SWD index can better reflect the difference and change of image quality and structure, while MS-SSIM only measures the change between the output and does not reflect the difference between the generated image and the training set, so after the generated image has been significantly improved , The MS-SSIM index has hardly changed, and the result of the SWD index has become a little better.
 
-**生成效果**
+**Generate effect**
 
 The paper stated that the network did not fully converge within the specified number of iterations, but stopped training after reaching the specified number of iterations, so the generated image is not perfect enough. If you want to generate a more perfect image, you have to wait a few more days.
 
-**API 转换**
+**API transform**
 
 Convert the pytorch version code to paddle. Some APIs are not available in paddle, but numpy must have them :smile:. Use numpy to build a bridge for APIs that cannot be found. This is a very good way to reproduce.
 
