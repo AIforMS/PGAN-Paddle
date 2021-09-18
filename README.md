@@ -118,8 +118,8 @@ python datasets.py celeba_cropped $PATH_TO_CELEBA/img_align_celeba/ -o $OUTPUT_D
     "miniBatchScheduler": {"0": 64, "1": 64, "2": 64, "3": 64, "4": 32, "5": 22},
     "configScheduler": {
       "0": {"baseLearningRate": 0.003},
-  "1": {"baseLearningRate": 0.003},
-  "2": {"baseLearningRate": 0.003},
+      "1": {"baseLearningRate": 0.003},
+      "2": {"baseLearningRate": 0.003},
       "3": {"baseLearningRate": 0.003},
       "4": {"baseLearningRate": 0.001},
       "5": {"baseLearningRate": 0.001}
