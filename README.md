@@ -1,5 +1,28 @@
 ﻿# 论文复现：Progressive Growing of GANs for Improved Quality, Stability, and Variation
 
+[English](README_EN.md) | [简体中文](README.md)
+
+- **PGAN-Paddle**
+  - [一、简介](#一简介)
+  - [二、复现精度](#二复现精度)
+  - [三、数据集](#三数据集)
+  - [四、环境依赖](四环境依赖)
+  - [五、快速开始](五快速开始)
+    - [5.1 训练](#51-训练)
+      - [step1: 数据预处理](#数据预处理)
+      - [step2: 运行训练](#运行训练)
+    - [5.2 预测](#52-预测)
+      - [step1: 图像生成](#图像生成)
+      - [step2: 评估指标](#评估指标)
+  - [六、代码结构与详细说明](#六代码结构与详细说明)
+    - [6.1 代码结构](#61-代码结构)
+    - [6.2 参数说明](#62-参数说明)
+    - [6.3 训练流程](#63-训练流程)
+    - [6.4 测试流程](#64-测试流程)
+  - [七、实验数据及复现心得](#七实验数据比较及复现心得)
+  - [八、模型信息](#八模型信息)
+
+
 ## 一、简介
 本文提出了一种新的训练 GAN 的方法——在训练过程中逐步增加生成器和鉴别器的卷积层：从低分辨率开始，随着训练的进行，添加更高分辨率的卷积层，对更加精细的细节进行建模，生成更高分辨率和质量的图像。
 ![0](https://img-blog.csdnimg.cn/13d251cb1f6441e5b8efb3f963af29d7.jpg)
@@ -61,125 +84,126 @@
 
 ## 五、快速开始
 
-### 1. 训练
-- **数据预处理**
+### 5.1 训练
 
-	在开始训练之前先解压下载的 `img_align_celeba.zip` 数据集，然后使用 `datasets.py` 脚本对解压后的数据集进行预处理：
-	
-	每个图像会被 cropped 到 128×128 分辨率
-	```
-	python datasets.py celeba_cropped $PATH_TO_CELEBA/img_align_celeba/ -o $OUTPUT_DATASET
-	```
-	处理完成后，会在项目根目录下生成配置文件 `config_celeba_cropped.json` 并自动写入了以下内容，指定了预处理数据集路径以及逐层训练的相应迭代次数：
-	```json
-	{
-	  "pathDB": "img_dataset/celeba_cropped",
-	  "config": {
-	    "maxIterAtScale": [
-	      48000,
-	      96000,
-	      96000,
-	      96000,
-	      96000,
-	      96000
-	    ]
-	  }
-	}
-	```
-	可以在 config 中修改训练配置，比如调整 batch_size，它会覆盖 `standard configuration` 中的默认配置，以下是我的训练配置：
-	```json
-	{
-	  "pathDB": "img_dataset/celeba_cropped",
-	  "config": {
-	    "miniBatchScheduler": {"0": 64, "1": 64, "2": 64, "3": 64, "4": 32, "5": 22},
-	    "configScheduler": {
-	      "0": {"baseLearningRate": 0.003},
-          "1": {"baseLearningRate": 0.003},
-          "2": {"baseLearningRate": 0.003},
-	      "3": {"baseLearningRate": 0.003},
-	      "4": {"baseLearningRate": 0.001},
-	      "5": {"baseLearningRate": 0.001}
-	    },
-	    "maxIterAtScale": [
-	      48000,
-	      96000,
-	      96000,
-	      96000,
-	      96000,
-	      160000
-	    ]
-	  }
-	}
-	```
-    > `miniBatchScheduler` 中可以针对不同的 scale 设置不同的 batch_size，因为随着 scale 的增加，需要减小 batch_size 来防止爆显存。`configScheduler` 中可以针对不同的 scale 设置不同的 learning_rate。在代码 `PGAN-Paddle/models/progressive_gan.py` 中我还加入了自适应学习率衰减策略（lr.ReduceOnPlateau）。
+#### step1: 数据预处理
+
+在开始训练之前先解压下载的 `img_align_celeba.zip` 数据集，然后使用 `datasets.py` 脚本对解压后的数据集进行预处理：
+
+每个图像会被 cropped 到 128×128 分辨率
+```
+python datasets.py celeba_cropped $PATH_TO_CELEBA/img_align_celeba/ -o $OUTPUT_DATASET
+```
+处理完成后，会在项目根目录下生成配置文件 `config_celeba_cropped.json` 并自动写入了以下内容，指定了预处理数据集路径以及逐层训练的相应迭代次数：
+```json
+{
+  "pathDB": "img_dataset/celeba_cropped",
+  "config": {
+    "maxIterAtScale": [
+      48000,
+      96000,
+      96000,
+      96000,
+      96000,
+      96000
+    ]
+  }
+}
+```
+可以在 config 中修改训练配置，比如调整 batch_size，它会覆盖 `standard configuration` 中的默认配置，以下是我的训练配置：
+```json
+{
+  "pathDB": "img_dataset/celeba_cropped",
+  "config": {
+    "miniBatchScheduler": {"0": 64, "1": 64, "2": 64, "3": 64, "4": 32, "5": 22},
+    "configScheduler": {
+      "0": {"baseLearningRate": 0.003},
+  "1": {"baseLearningRate": 0.003},
+  "2": {"baseLearningRate": 0.003},
+      "3": {"baseLearningRate": 0.003},
+      "4": {"baseLearningRate": 0.001},
+      "5": {"baseLearningRate": 0.001}
+    },
+    "maxIterAtScale": [
+      48000,
+      96000,
+      96000,
+      96000,
+      96000,
+      160000
+    ]
+  }
+}
+```
+> `miniBatchScheduler` 中可以针对不同的 scale 设置不同的 batch_size，因为随着 scale 的增加，需要减小 batch_size 来防止爆显存。`configScheduler` 中可以针对不同的 scale 设置不同的 learning_rate。在代码 `PGAN-Paddle/models/progressive_gan.py` 中我还加入了自适应学习率衰减策略（lr.ReduceOnPlateau）。
     
-- **运行训练**
+#### step2: 运行训练
 
-	接着运行以下命令从零开始训练 PGAN：
-	```
-	python train.py PGAN -c config_celeba_cropped.json --restart -n celeba_cropped --np_vis
-	```
-	然后等几天（我用 T4 和百度 AI studio 的 V100，前后跑了 6 天。所以它到底加速了什么呢 :stuck_out_tongue_closed_eyes: ）。。。各个阶段训练好的模型会被转储到 `output_networks/celeba_cropped` 中。训练完成后应该得到 128 x 128 分辨率的生成图像。
-	
-	如果训练中断，重启训练时可以把 `--restart` 去掉，训练会从 `output_networks/celeba_cropped` 中保存的最新模型开始。如果想使用 GDPP loss，可以加入 `--GDPP True`。
-    
-    `output_networks/celeba_cropped` 中会保存每个阶段训练完成的：
-    - 模型：`celeba_cropped_s$scale_i$iters.pdparams`
-    - 配置文件：`celeba_cropped_s$scale_i$iters_tmp_config.json`
-    - refVectors：`celeba_cropped_refVectors.pdparams`
-    - losses：`celeba_cropped_losses.pkl`
-    - 生成的图像：`celeba_cropped_s$scale_i$iters_avg.jpg`、`celeba_cropped_s$scale_i$iters.jpg`，`_avg.jpg` 图像效果更好，预测时默认使用其来计算指标。
-       ![2](https://img-blog.csdnimg.cn/7fe8ba1e0259449ebd00d035819fec49.jpg)
+接着运行以下命令从零开始训练 PGAN：
+```
+python train.py PGAN -c config_celeba_cropped.json --restart -n celeba_cropped --np_vis
+```
+然后等几天（我用 T4 和百度 AI studio 的 V100，前后跑了 6 天。所以它到底加速了什么呢 :stuck_out_tongue_closed_eyes: ）。。。各个阶段训练好的模型会被转储到 `output_networks/celeba_cropped` 中。训练完成后应该得到 128 x 128 分辨率的生成图像。
 
-### 2. 预测
+如果训练中断，重启训练时可以把 `--restart` 去掉，训练会从 `output_networks/celeba_cropped` 中保存的最新模型开始。如果想使用 GDPP loss，可以加入 `--GDPP True`。
+
+`output_networks/celeba_cropped` 中会保存每个阶段训练完成的：
+- 模型：`celeba_cropped_s$scale_i$iters.pdparams`
+- 配置文件：`celeba_cropped_s$scale_i$iters_tmp_config.json`
+- refVectors：`celeba_cropped_refVectors.pdparams`
+- losses：`celeba_cropped_losses.pkl`
+- 生成的图像：`celeba_cropped_s$scale_i$iters_avg.jpg`、`celeba_cropped_s$scale_i$iters.jpg`，`_avg.jpg` 图像效果更好，预测时默认使用其来计算指标。
+![2](https://img-blog.csdnimg.cn/7fe8ba1e0259449ebd00d035819fec49.jpg)
+
+### 5.2 预测
 
 **训练好的最终模型可到百度网盘自取：[celeba_cropped_s5_i96000](https://pan.baidu.com/s/1-wvYpLYiEUGpBi3xT31roA )**，提取码：6nv9。将其中的文件放到项目的 `output_networks/celeba_cropped` 中，在 `.json` 文件中指定 `refVectors.pdparams` 的路径，`losses.pkl` 可以没有。
 > 如需要运行 i80000.pdparams 模型，可以把 `.json` 文件的文件名改成对应的 i80000，因为需要通过这个文件找到 `refVectors.pdparams` 的路径。
 
-- **图像生成**
+#### step1: 图像生成
 
-  通过以下命令使用 `output_networks/celeba_cropped` 中保存的最新模型来生成图像：
-	```
-	python eval.py visualization -n celeba_cropped -m PGAN --np_vis
-	```
-	如果你想指定某个阶段的模型，加入 `-s $scale` 和 `-i $iter`：
-	```
-	python eval.py visualization -n celeba_cropped -m PGAN -s $SCALE -i $ITER --np_vis
-	```
-	以上两个命令生成的图像保存在 `output_networks/celeba_cropped` 中，名为：`celeba_cropped_s$scale_i$iter_fullavg.jpg`
-	
-	随机生成一些图像：
-	```
-	python eval.py visualization -n celeba_cropped -m PGAN --save_dataset $PATH_TO_THE_OUTPUT_DATASET --size_dataset $SIZE_OF_THE_OUTPUT --np_vis
-	```
-	其中，`$SIZE_OF_THE_OUTPUT` 表示要生成多少张图像。
+通过以下命令使用 `output_networks/celeba_cropped` 中保存的最新模型来生成图像：
+```
+python eval.py visualization -n celeba_cropped -m PGAN --np_vis
+```
+如果你想指定某个阶段的模型，加入 `-s $scale` 和 `-i $iter`：
+```
+python eval.py visualization -n celeba_cropped -m PGAN -s $SCALE -i $ITER --np_vis
+```
+以上两个命令生成的图像保存在 `output_networks/celeba_cropped` 中，名为：`celeba_cropped_s$scale_i$iter_fullavg.jpg`
 
-- **评估指标**
+随机生成一些图像：
+```
+python eval.py visualization -n celeba_cropped -m PGAN --save_dataset $PATH_TO_THE_OUTPUT_DATASET --size_dataset $SIZE_OF_THE_OUTPUT --np_vis
+```
+其中，`$SIZE_OF_THE_OUTPUT` 表示要生成多少张图像。
 
-	**SWD & MS-SSIM metric**
-	
-	运行：
-	```
-	python eval.py laplacian_SWD -c config_celeba_cropped.json -n celeba_cropped -m PGAN -s 5 -i 64000 --np_vis
-	```
-	它会在 `config_celeba_cropped.json` 里指定的数据路径中随机遍历 16000 张源图像及其生成图像来计算 SWD 指标，Merging the results 的过程会占用不少 CPU 内存（18 GB 左右）和时间。运行后会输出：
-	```
-	Running laplacian_SWD
-	Checkpoint found at scale 5, iter 64000
-	Average network found !
-	202599 images found
-	Generating the fake dataset...
-	 |####################################################################################################| 100.0% 
-	 |####################################################################################################| 100.0% 
-	Merging the results, please wait it can take some time...
-	 |####################################################################################################| 100.0% 
-	
-	     resolution               128               64               32  16 (background)
-	           score         0.006042         0.002615         0.004997         0.011406 
-	     ms-ssim score    0.2719      
-	...OK
-	```
-	其中相应的指标数值会保存在 `output_networks/celeba_cropped/celeba_cropped_swd.json` 中。
+#### step2: 评估指标
+
+**SWD & MS-SSIM metric**
+
+运行：
+```
+python eval.py laplacian_SWD -c config_celeba_cropped.json -n celeba_cropped -m PGAN -s 5 -i 64000 --np_vis
+```
+它会在 `config_celeba_cropped.json` 里指定的数据路径中随机遍历 16000 张源图像及其生成图像来计算 SWD 指标，Merging the results 的过程会占用不少 CPU 内存（18 GB 左右）和时间。运行后会输出：
+```
+Running laplacian_SWD
+Checkpoint found at scale 5, iter 64000
+Average network found !
+202599 images found
+Generating the fake dataset...
+ |####################################################################################################| 100.0% 
+ |####################################################################################################| 100.0% 
+Merging the results, please wait it can take some time...
+ |####################################################################################################| 100.0% 
+
+     resolution               128               64               32  16 (background)
+	   score         0.006042         0.002615         0.004997         0.011406 
+     ms-ssim score    0.2719      
+...OK
+```
+其中相应的指标数值会保存在 `output_networks/celeba_cropped/celeba_cropped_swd.json` 中。
 
 ## 六、代码结构与详细说明
 ### 6.1 代码结构
@@ -214,10 +238,10 @@
 ```
 
 ### 6.2 参数说明
-见 [二、复现精度](#二、复现精度)
+见 [二、复现精度](#二复现精度)
 
 ### 6.3 训练流程
-见 [五、快速开始](#五、快速开始)
+见 [五、快速开始](#五快速开始)
 
 执行训练开始后，将得到类似如下的输出。每 100 个迭代会打印当前 [scale:    iters]  以及生成器损失、辨别器损失。
 
@@ -296,7 +320,7 @@ Changing alpha to 0.000
 ```
 
 ### 6.4 测试流程
-见 [五、快速开始](#五、快速开始)
+见 [五、快速开始](#五快速开始)
 
 使用最终的预训练模型 `celeba_cropped_s5_i96000.pdparams` 生成的图像如下：
 ![3](https://img-blog.csdnimg.cn/26afed935c61443da4d0e5bb7f9bee97.png)
