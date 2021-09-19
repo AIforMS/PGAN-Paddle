@@ -33,6 +33,10 @@
 
 论文链接：[Progressive Growing of GANs for Improved Quality, Stability, and Variation](https://paperswithcode.com/paper/progressive-growing-of-gans-for-improved)
 
+赛场：
+- [飞桨论文复现挑战赛（第四期）](https://aistudio.baidu.com/aistudio/competition/detail/106)
+- [飞桨论文复现挑战赛（第四期）榜单](https://github.com/PaddlePaddle/Paddle/issues/34526)
+
 
 ## 二、复现精度
 参考官方开源的 pytorch 版本代码 [https://github.com/facebookresearch/pytorch_GAN_zoo](https://github.com/facebookresearch/pytorch_GAN_zoo)，基于 paddlepaddle 深度学习框架，对文献算法进行复现后，本项目达到的测试精度，如下表所示。 参考文献的最高精度为 CelebA MS-SSIM=0.2838, SWD=2.64(64)
