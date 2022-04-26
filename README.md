@@ -147,7 +147,7 @@ python datasets.py celeba_cropped $PATH_TO_CELEBA/img_align_celeba/ -o $OUTPUT_D
 ```
 python train.py PGAN -c config_celeba_cropped.json --restart -n celeba_cropped --np_vis
 ```
-然后等几天（我用 T4 和百度 AI studio 的 V100，前后跑了 6 天。所以它到底加速了什么呢 :stuck_out_tongue_closed_eyes: ）。。。各个阶段训练好的模型会被转储到 `output_networks/celeba_cropped` 中。训练完成后应该得到 128 x 128 分辨率的生成图像。
+然后等几天（我用 T4 和百度 AI studio 的 V100，前后跑了 6 天。:stuck_out_tongue_closed_eyes: ）。。。各个阶段训练好的模型会被转储到 `output_networks/celeba_cropped` 中。训练完成后应该得到 128 x 128 分辨率的生成图像。
 
 如果训练中断，重启训练时可以把 `--restart` 去掉，训练会从 `output_networks/celeba_cropped` 中保存的最新模型开始。如果想使用 GDPP loss，可以加入 `--GDPP True`。
 
